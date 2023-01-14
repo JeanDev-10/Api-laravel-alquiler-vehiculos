@@ -5,6 +5,7 @@ use Validator;
 use App\Models\Vehiculo;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 class VehiculoController extends Controller
 {
     private  $rules=array(
@@ -39,6 +40,7 @@ class VehiculoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
     public function store(Request $request)
     {
 
@@ -48,14 +50,20 @@ class VehiculoController extends Controller
             $messages=$validator->messages();
             return response()->json(["messages"=>$messages], 500);
         }
-        $vehiculo = new Vehiculo($request->all());
+        $file = $request->image;;
+         $obj = Cloudinary::upload($file->getRealPath(),['folder'=>'vehiculos']);
+        $public_id = $obj->getPublicId();
+        $url =$obj->getSecurePath();
+        $vehiculo=new Vehiculo();
+        $vehiculo->modelo=$request->modelo;
+        $vehiculo->public_id=$public_id;
+        $vehiculo->marca=$request->marca;
+        $vehiculo->url=$url;
         $vehiculo->estado=1;
-        $path = $request->image->store('public/vehiculo');
-//        $path = $request->image->storeAs('public/articles', $request->user()->id . '_' . $article->title . '.' . $request->image->extension());
-
-        $vehiculo->image ='vehiculo/' . basename(time().'-'.$path);
         $vehiculo->save();
-        return response()->json($vehiculo, Response::HTTP_OK);
+        return response()->json($url, Response::HTTP_OK);
+
+
     }
 
 
@@ -87,16 +95,26 @@ class VehiculoController extends Controller
         {
             $messages=$validator->messages();
             return response()->json(["messages"=>$messages], 500);
-        }$this->$vehiculo=Vehiculo::findOrFail($id);
-        $this->vehiculo->modelo=$request->modelo;
-        $vehiculo->marca=$request->marca;
-        $path = $request->image->store('public/vehiculo');
-        unlink(storage_path('app/public/'.$vehiculo->image));
-        $vehiculo->image = 'vehiculo/' . basename(time().'-'.$path);
-        $vehiculo->save();
+        }
+        $producto = Vehiculo::find($id);
+        $url = $producto->url;
+        $public_id = $producto->public_id;
+        if($request->hasFile('image')){
+            Cloudinary::destroy($public_id);
+            $file = request()->file('image');
+            $obj = Cloudinary::upload($file->getRealPath(),['folder'=>'vehiculos']);
+            $url = $obj->getSecurePath();
+            $public_id = $obj->getPublicId();
+        }
+        $producto->update([
+            "nombre"=>$request->nombre,
+            "descripcion"=>$request->descripcion,
+            "url"=>$url,
+            "public_id"=>$public_id
+        ]);
         return response()->json([
             'message'=>" successfully updated",
-            'vehiculo'=>$request->all()
+            'vehiculo'=>$producto
         ], Response::HTTP_OK);
 
     }
@@ -109,10 +127,13 @@ class VehiculoController extends Controller
      */
     public function destroy($id)
     {
-        $vehiculo=Vehiculo::findOrFail($id);
+        $producto = Vehiculo::find($id);
+        $public_id = $producto->public_id;
+        Cloudinary::destroy($public_id);
+        Vehiculo::destroy($id);
+        /* $vehiculo=Vehiculo::findOrFail($id);
         unlink(storage_path('app/public/'.$vehiculo->image));
         /* Storage::disk('public')->delete($vehiculo->image); */
-        $vehiculo->delete();
         return response()->json([
             'message'=>"delete correct image"
         ]);

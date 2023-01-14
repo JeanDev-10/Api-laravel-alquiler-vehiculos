@@ -17,7 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('marca');
             $table->string('modelo');
-            $table->string('image');
+            $table->string('public_id');
+            $table->string('url');
             $table->boolean('estado');
             $table->timestamps();
         });
