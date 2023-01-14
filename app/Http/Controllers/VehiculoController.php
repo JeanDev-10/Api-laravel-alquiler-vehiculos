@@ -29,9 +29,7 @@ class VehiculoController extends Controller
     public function index()
     {
         $vehiculos=Vehiculo::all();
-        return response()->json([
-            "$vehiculos" => $vehiculos
-        ], Response::HTTP_OK);
+        return response()->json($vehiculos, Response::HTTP_OK);
     }
 
     /**
