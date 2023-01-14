@@ -61,7 +61,7 @@ class VehiculoController extends Controller
         $vehiculo->url=$url;
         $vehiculo->estado=1;
         $vehiculo->save();
-        return response()->json($url, Response::HTTP_OK);
+        return response()->json($vehiculo, Response::HTTP_OK);
 
 
     }
