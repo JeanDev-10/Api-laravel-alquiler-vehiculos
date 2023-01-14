@@ -9,12 +9,13 @@ use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 class VehiculoController extends Controller
 {
     private  $rules=array(
-        "modelo"=>'required|string',
+        "modelo"=>'required|string|unique:vehiculos',
         "marca"=>'required|string',
         'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
     );
     private $messages=array(
         'modelo.required' => 'Please enter a modelo.',
+        'modelo.unique' => 'Please enter other model.',
         'modelo.string' => 'debe ser string.',
         'marca.required' => 'Please enter a marca.',
         'marca.string' => 'debe ser string.',
