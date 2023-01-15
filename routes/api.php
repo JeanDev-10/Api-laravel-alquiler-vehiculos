@@ -18,8 +18,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 /* Route::resource('vehiculo', VehiculoController::class)->only(['index','show','update','destroy','store']); */
-Route::get('vehiculo',[VehiculoController::class,'index']);
-Route::post('vehiculo',[VehiculoController::class,'store']);
-Route::get('vehiculo/{id}',[VehiculoController::class,'show']);
-Route::post('vehiculo/{id}',[VehiculoController::class,'update']);
-Route::delete('vehiculo/{id}',[VehiculoController::class,'destroy']);
+Route::controller(VehiculoController::class)->group(function () {
+    Route::get('vehiculo','index');
+    Route::post('vehiculo','store');
+    Route::get('vehiculo/{id}','show');
+    Route::post('vehiculo/{id}','update');
+    Route::delete('vehiculo/{id}','destroy');
+});
+

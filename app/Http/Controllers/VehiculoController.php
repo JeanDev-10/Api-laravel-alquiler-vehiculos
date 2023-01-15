@@ -1,11 +1,10 @@
 <?php
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Storage;
-use Validator;
 use App\Models\Vehiculo;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Validator;
 class VehiculoController extends Controller
 {
     private  $rules=array(
