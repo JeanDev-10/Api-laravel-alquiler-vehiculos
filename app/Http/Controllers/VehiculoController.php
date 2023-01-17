@@ -4,7 +4,9 @@ use App\Models\Vehiculo;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
-use Validator;
+/* use Validator; */
+use Illuminate\Support\Facades\Validator;
+
 class VehiculoController extends Controller
 {
     private  $rules=array(
