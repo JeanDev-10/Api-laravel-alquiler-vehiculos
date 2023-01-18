@@ -19,16 +19,26 @@ Route::post('login', [UsuarioController::class, 'login']);
 
 Route::group( ['middleware' => ["auth:sanctum"]], function(){
     //rutas
-    Route::get('user-profile', [UsuarioController::class, 'userProfile']);
-    Route::post('logout', [UsuarioController::class, 'logout']);
+    Route::controller(UsuarioController::class)->group(function () {
+        Route::get('user-profile', 'userProfile');
+        Route::post('logout',  'logout');
+    });
 });
 
 /* Route::resource('vehiculo', VehiculoController::class)->only(['index','show','update','destroy','store']); */
-Route::controller(VehiculoController::class)->group(function () {
-    Route::get('vehiculo','index');
-    Route::post('vehiculo','store');
-    Route::get('vehiculo/{id}','show');
-    Route::post('vehiculo/{id}','update');
-    Route::delete('vehiculo/{id}','destroy');
+Route::group( ['middleware' => ["auth:sanctum"]], function(){
+    //rutas
+    Route::controller(VehiculoController::class)->group(function () {
+        Route::get('vehiculos','index')->name('index.vehiculos');
+        Route::post('vehiculos','store')->name('store.vehiculos');
+        Route::post('vehiculos/{id}','update')->name('update.vehiculos');
+        Route::delete('vehiculos/{id}','destroy')->name('destroy.vehiculos');
+    });
 });
+/* Route::controller(VehiculoController::class)->group(function () {
+    Route::get('vehiculos','index')->middleware('can:index.vehiculos')->name('index.vehiculos');
+    Route::post('vehiculos','store')->middleware('can:store.vehiculos')->name('store.vehiculos');
+    Route::post('vehiculos/{id}','update')->middleware('can:update.vehiculos')->name('update.vehiculos');
+    Route::delete('vehiculos/{id}','destroy')->middleware('can:destroy.vehiculos')->name('destroy.vehiculos');
+}); */
 

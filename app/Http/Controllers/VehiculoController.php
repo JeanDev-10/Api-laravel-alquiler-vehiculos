@@ -9,6 +9,13 @@ use Illuminate\Support\Facades\Validator;
 
 class VehiculoController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:index.vehiculos')->only('index');
+        $this->middleware('can:store.vehiculos')->only('store');
+        $this->middleware('can:update.vehiculos')->only('update');
+        $this->middleware('can:destroy.vehiculos')->only('destroy');
+    }
     private  $rules=array(
         "modelo"=>'required|string|unique:vehiculos',
         "marca"=>'required|string',
@@ -75,6 +82,7 @@ class VehiculoController extends Controller
      */
     public function show($id)
     {
+
         $vehiculo=Vehiculo::findOrFail($id);
         return response()->json([
             'vehiculo'=>$vehiculo
@@ -90,6 +98,7 @@ class VehiculoController extends Controller
      */
     public function update(Request $request,$id )
     {
+
         $validator=Validator::make($request->all(),$this->rules,$this->messages);
         if($validator->fails())
         {
@@ -127,6 +136,7 @@ class VehiculoController extends Controller
      */
     public function destroy($id)
     {
+
         $producto = Vehiculo::find($id);
         $public_id = $producto->public_id;
         Cloudinary::destroy($public_id);
