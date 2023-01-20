@@ -18,8 +18,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'cedula',
     ];
-    public $timestamps = false;
+    public $timestamps=false;
     /* $role = Role::create(['name' => 'writer']);
     $permission = Permission::create(['name' => 'edit articles']); */
+    public function vehiculos(){
+        return $this->belongsToMany(Vehiculo::class,'cliente_vehiculo');
+    }
 }

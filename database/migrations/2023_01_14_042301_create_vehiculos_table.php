@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('public_id');
             $table->string('url');
             $table->boolean('estado');
-            $table->timestamps();
         });
     }
 

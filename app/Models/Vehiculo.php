@@ -9,6 +9,11 @@ class Vehiculo extends Model
 {
     use HasFactory;
     use MediaAlly;
+    public $table="vehiculos";
+    public $timestamps=false;
     protected $fillable=['modelo','marca',"public_id",
     "url"];
+    public function users(){
+        return $this->belongsToMany(User::class,'cliente_vehiculo');
+    }
 }
