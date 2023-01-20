@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 class UsuarioController extends Controller
@@ -89,11 +90,17 @@ class UsuarioController extends Controller
     public function userProfile()
     {
         $user=auth()->user();
+         $usuario= DB::table('users')
+        ->where('users.id','=',$user->id)
+        ->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
+        ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+        ->select('users.name as nombre_usuario', 'users.cedula as cedula_usuario', 'users.email as email_usuario', 'roles.name as rol')
+        ->get();
         return response()->json([
             "status" => 0,
             "msg" => "Acerca del perfil de usuario",
-            "user" => $user,
-            "roles"=>$user->getRoleNames()
+            "user" => $usuario,
+            "usuario"=>$user,
         ]);
     }
 
