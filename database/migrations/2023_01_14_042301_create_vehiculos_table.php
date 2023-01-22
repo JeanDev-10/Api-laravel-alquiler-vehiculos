@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('modelo');
             $table->string('public_id');
             $table->string('url');
-            $table->boolean('estado');
+            $table->boolean('estado')->default(true);
         });
     }
 

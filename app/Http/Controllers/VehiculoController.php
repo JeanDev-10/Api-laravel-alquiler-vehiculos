@@ -90,7 +90,6 @@ class VehiculoController extends Controller
         $vehiculo->public_id=$public_id;
         $vehiculo->marca=$request->marca;
         $vehiculo->url=$url;
-        $vehiculo->estado=1;
         $vehiculo->save();
         return response()->json($vehiculo, Response::HTTP_OK);
 

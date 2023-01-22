@@ -24,8 +24,7 @@ Route::post('login', [UsuarioController::class, 'login']);
         Route::get('user-profile', 'userProfile');
         Route::post('logout',  'logout');
     });
-    /* Route::post('vehiculos/alquilar',[VehiculoController::class,'alquilarVehiculo'])->name('alquilar.vehiculos');
-    Route::get('vehiculos/mis-alquilados', [VehiculoController::class,'vehiculosAlquiladosPropios'])->name('mis-alquilados.vehiculos'); */
+
     Route::controller(VehiculoController::class)->group(function () {
         Route::post('vehiculos/alquilar','alquilarVehiculo')->name('alquilar.vehiculos');
         Route::get('vehiculos','index')->name('index.vehiculos');

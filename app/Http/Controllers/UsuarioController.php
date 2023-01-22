@@ -66,8 +66,7 @@ class UsuarioController extends Controller
             return response()->json(["messages" => $messages], 500);
         }
 
-        $user = User::where("email", "=", $request->email)->first();
-
+         $user = User::where("email", "=", $request->email)->first();
         if (isset($user->id)) {
             if (Hash::check($request->password, $user->password)) {
                 //creamos el token
@@ -81,9 +80,14 @@ class UsuarioController extends Controller
             }  else {
             return response()->json([
                 "status" => 0,
-                "msg" => "Usuario no registrado o credenciales incorrectas",
+                "msg" => "credenciales incorrectas",
             ], 404);
         }
+    }else{
+        return response()->json([
+            "status" => 0,
+            "msg" => "Usuario no registrado",
+        ], 404);
     }
 }
 
