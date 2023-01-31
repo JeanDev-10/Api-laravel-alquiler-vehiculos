@@ -12,7 +12,7 @@ class UsuarioController extends Controller
     private  $rules = array(
         'name' => 'required',
         'email' => 'required|email|unique:users',
-        'password' => 'required|confirmed',
+        'password' => 'required',
         'cedula' => 'required|unique:users',
     );
     private $messages = array(
@@ -23,7 +23,6 @@ class UsuarioController extends Controller
         'email.required' => 'email es requerido.',
         'email.email' => 'debe ser un email correcto.',
         'password.required' => 'debe ingresar una password',
-        'password.confirmed' => 'debe confirmar contraseña',
     );
     private  $rulesLogin = array(
         'email' => 'required|email',
@@ -53,7 +52,7 @@ class UsuarioController extends Controller
 
         return response()->json([
             "status" => 1,
-            "msg" => "¡Registro de usuario exitoso!",
+            "messages" => "¡Registro de usuario exitoso!",
         ]);
     }
 
@@ -73,20 +72,20 @@ class UsuarioController extends Controller
                 $token = $user->createToken("auth_token")->plainTextToken;
                 //si está todo ok
                 return response()->json([
-                    "status" => 1,
-                    "msg" => "¡Usuario logueado exitosamente!",
+
+                    "messages" => "¡Usuario logueado exitosamente!",
                     "access_token" => $token
                 ]);
             }  else {
             return response()->json([
                 "status" => 0,
-                "msg" => "credenciales incorrectas",
+                "messages" => "credenciales incorrectas",
             ], 404);
         }
     }else{
         return response()->json([
             "status" => 0,
-            "msg" => "Usuario no registrado",
+            "messages" => "Usuario no registrado",
         ], 404);
     }
 }
@@ -101,10 +100,9 @@ class UsuarioController extends Controller
         ->select('users.name as nombre_usuario', 'users.cedula as cedula_usuario', 'users.email as email_usuario', 'roles.name as rol')
         ->get();
         return response()->json([
-            "status" => 0,
             "msg" => "Acerca del perfil de usuario",
-            "user" => $usuario,
-            "usuario"=>$user,
+            "user" => $usuario[0],
+            /* "usuario"=>$user, */
         ]);
     }
 
@@ -114,7 +112,8 @@ class UsuarioController extends Controller
 
         return response()->json([
             "status" => 1,
-            "msg" => "Cierre de Sesión",
+            "messages" => "Cierre de Sesión",
         ]);
     }
+
 }

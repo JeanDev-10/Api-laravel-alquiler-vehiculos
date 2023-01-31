@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('detalle_alquiler', function (Blueprint $table) {
             $table->id();
-            $table->date('fecha_alquiler');
+            $table->dateTime('fecha_alquiler');
             $table->dateTime('tiempo_alquiler');
             $table->double('valor_alquiler');
             $table->foreignId('cliente_vehiculo_id')

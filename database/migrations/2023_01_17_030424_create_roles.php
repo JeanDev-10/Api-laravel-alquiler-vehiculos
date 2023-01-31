@@ -20,6 +20,7 @@ return new class extends Migration
         Permission::create(['name' => 'destroy.vehiculos'])->syncRoles([$role1]);
         Permission::create(['name' => 'store.vehiculos'])->syncRoles([$role1]);
         Permission::create(['name' => 'alquilados.vehiculos'])->syncRoles([$role1]);
+        Permission::create(['name' => 'alquilar.vehiculos-delete'])->syncRoles([$role1]);
         /* Permission::create(['name' => 'mis-alquilados.vehiculos'])->syncRoles([$role2]);
         Permission::create(['name' => 'alquilar.vehiculos'])->syncRoles([$role2]); */
 

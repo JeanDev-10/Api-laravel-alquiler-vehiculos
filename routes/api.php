@@ -26,6 +26,7 @@ Route::post('login', [UsuarioController::class, 'login']);
     });
 
     Route::controller(VehiculoController::class)->group(function () {
+        Route::delete('vehiculos/alquilar/{id}','eliminar_alquiler')->name('alquilar.vehiculos-delete');
         Route::post('vehiculos/alquilar','alquilarVehiculo')->name('alquilar.vehiculos');
         Route::get('vehiculos','index')->name('index.vehiculos');
         Route::post('vehiculos','store')->name('store.vehiculos');
@@ -33,6 +34,9 @@ Route::post('login', [UsuarioController::class, 'login']);
         Route::delete('vehiculos/{id}','destroy')->name('destroy.vehiculos');
         Route::get('vehiculos/alquilados', 'vehiculosAlquilados')->name('alquilados.vehiculos');
         Route::get('vehiculos/mis-alquilados', 'vehiculosAlquiladosPropios')->name('mis-alquilados.vehiculos');
+        Route::get('vehiculos/{id}','show')->name('index.show');
+        Route::post('vehiculos/alquilado/{id}','getVehiculoUser')->name('index.alquilado.show');
+
     });
 });
 

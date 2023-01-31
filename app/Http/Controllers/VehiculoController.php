@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ClienteVehiculo;
 use App\Models\DetalleAlquiler;
+use App\Models\User;
 use App\Models\Vehiculo;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,13 +21,14 @@ class VehiculoController extends Controller
         $this->middleware('can:update.vehiculos')->only('update');
         $this->middleware('can:destroy.vehiculos')->only('destroy');
         $this->middleware('can:alquilados.vehiculos')->only('vehiculosAlquilados');
+        $this->middleware('can:alquilar.vehiculos-delete')->only('eliminar_alquiler');
         /* $this->middleware('can:alquilar.vehiculos')->only('alquilarVehiculo');
         $this->middleware('can:mis-alquilados.vehiculos')->only('vehiculosAlquiladosPropios'); */
     }
 
     private  $rulesAlquilar=array(
         "vehiculo_id"=>'required|integer',
-        "fecha_alquiler"=>'required|date',
+        "fecha_alquiler"=>"required|after_or_equal:' . date('Y-m-d H:i:s')'",
         'tiempo_alquiler' => "required|after_or_equal:' . date('Y-m-d H:i:s')'",
         'valor_alquiler' => 'required|numeric|regex:/^[\d]{0,11}(\.[\d]{1,2})?$/',
     );
@@ -34,24 +36,33 @@ class VehiculoController extends Controller
         'vehiculo_id.required' => 'envie el id del vehiculo.',
         'vehiculo_id.integer' => 'debe ser un numero.',
         'fecha_alquiler.required' => 'fecha de alquiler es requerida',
-        'fecha_alquiler.date' => 'debe ser una fecha.',
+        'fecha_alquiler.datetime' => 'debe ser una fecha y hora.',
         'tiempo_alquiler.required' => 'el tiempo de devolucion es requerido.',
         'tiempo_alquiler.dateTime' => 'debe ser fecha y hora.',
         'valor_alquiler.required'=>'precio a pagar requerido',
     );
     private  $rules=array(
-        "modelo"=>'required|string|unique:vehiculos',
+        "modelo"=>'required|string',
         "marca"=>'required|string',
         'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
     );
+    private  $rulesu=array(
+        "modelo"=>'required|string',
+        "marca"=>'required|string',
+    );
     private $messages=array(
         'modelo.required' => 'Please enter a modelo.',
-        'modelo.unique' => 'Please enter other model.',
         'modelo.string' => 'debe ser string.',
         'marca.required' => 'Please enter a marca.',
         'marca.string' => 'debe ser string.',
         'image.required'=>'imagen requerida',
         'image.image'=>'debe ser imagen',
+    );
+    private $messagesu=array(
+        'modelo.required' => 'Please enter a modelo.',
+        'modelo.string' => 'debe ser string.',
+        'marca.required' => 'Please enter a marca.',
+        'marca.string' => 'debe ser string.',
     );
 
     /**
@@ -74,7 +85,6 @@ class VehiculoController extends Controller
 
     public function store(Request $request)
     {
-
         $validator=Validator::make($request->all(),$this->rules,$this->messages);
         if($validator->fails())
         {
@@ -104,10 +114,9 @@ class VehiculoController extends Controller
      */
     public function show($id)
     {
-
         $vehiculo=Vehiculo::findOrFail($id);
         return response()->json([
-            'vehiculo'=>$vehiculo
+            'vehiculos'=>$vehiculo
         ],Response::HTTP_OK);
     }
 
@@ -121,7 +130,7 @@ class VehiculoController extends Controller
     public function update(Request $request,$id )
     {
 
-        $validator=Validator::make($request->all(),$this->rules,$this->messages);
+        $validator=Validator::make($request->all(),$this->rulesu,$this->messagesu);
         if($validator->fails())
         {
             $messages=$validator->messages();
@@ -203,7 +212,7 @@ class VehiculoController extends Controller
         ->join('cliente_vehiculo', 'cliente_vehiculo.vehiculo_id', '=', 'vehiculos.id')
         ->join('users', 'cliente_vehiculo.user_id', '=', 'users.id')
         ->join('detalle_alquiler','cliente_vehiculo.id','=','detalle_alquiler.cliente_vehiculo_id')
-        ->select('users.name as nombre_usuario', 'users.cedula as cedula_usuario', 'users.email as email_usuario', 'detalle_alquiler.fecha_alquiler as fecha_alquiler', 'detalle_alquiler.tiempo_alquiler as tiempo_alquiler','vehiculos.marca as marca_vehiculo','vehiculos.modelo as modelo_vehiculo','vehiculos.url as url_vehiculo')
+        ->select('users.name as nombre_usuario', 'users.cedula as cedula_usuario', 'users.email as email_usuario', 'detalle_alquiler.fecha_alquiler as fecha_alquiler', 'detalle_alquiler.tiempo_alquiler as tiempo_alquiler','vehiculos.marca as marca_vehiculo','vehiculos.modelo as modelo_vehiculo','vehiculos.url as url_vehiculo','detalle_alquiler.valor_alquiler as precio_pagar', 'cliente_vehiculo.id as id')
         ->get();
         return response()->json([
             'vehiculos'=>$vehiculo,
@@ -217,11 +226,28 @@ class VehiculoController extends Controller
         ->join('cliente_vehiculo', 'cliente_vehiculo.vehiculo_id', '=', 'vehiculos.id')
         ->join('users', 'cliente_vehiculo.user_id','=',"users.id")
         ->join('detalle_alquiler','cliente_vehiculo.id','=','detalle_alquiler.cliente_vehiculo_id')
-         ->select('detalle_alquiler.fecha_alquiler as fecha_alquiler', 'detalle_alquiler.tiempo_alquiler as tiempo_alquiler','vehiculos.marca as marca_vehiculo','vehiculos.modelo as modelo_vehiculo','vehiculos.url as url_vehiculo','detalle_alquiler.valor_alquiler as precio_pagar')
+         ->select('detalle_alquiler.fecha_alquiler as fecha_alquiler', 'detalle_alquiler.tiempo_alquiler as tiempo_alquiler','vehiculos.marca as marca_vehiculo','vehiculos.modelo as modelo_vehiculo','vehiculos.url as url_vehiculo','detalle_alquiler.valor_alquiler as precio_pagar','vehiculos.id as id')
         ->where('users.id','=',$user->id)
         ->get();
         return response()->json([
             'vehiculos'=>$vehiculo,
+        ]);
+    }
+    public function eliminar_alquiler($id)
+    {
+        $clientevehiculo=ClienteVehiculo::findOrFail($id);
+        $vehiculo=Vehiculo::findOrFail($clientevehiculo->vehiculo_id);
+        $vehiculo->estado=1;
+        $vehiculo->save();
+        $clientevehiculo->delete();
+        return response()->json([
+            'msg'=>"eliminado correctamente"
+        ]);
+    }
+    public function getVehiculoUser(Request $request,$id){
+        $vehiculo=User::findOrFail($request->user_id)->vehiculos->where('id',$id);
+        return response()->json([
+            "vehiculo"=>$vehiculo
         ]);
     }
 }
