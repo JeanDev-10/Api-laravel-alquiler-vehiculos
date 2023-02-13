@@ -6,7 +6,6 @@ use App\Models\ClienteVehiculo;
 use App\Models\DetalleAlquiler;
 use App\Models\User;
 use App\Models\Vehiculo;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder

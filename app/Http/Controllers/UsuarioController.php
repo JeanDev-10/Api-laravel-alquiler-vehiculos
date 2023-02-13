@@ -10,13 +10,14 @@ use Illuminate\Support\Facades\Validator;
 class UsuarioController extends Controller
 {
     private  $rules = array(
-        'name' => 'required',
+        'name' => 'required|regex:"^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$"',
         'email' => 'required|email|unique:users',
         'password' => 'required',
         'cedula' => 'required|unique:users',
     );
     private $messages = array(
         'name.required' => 'Please enter a name.',
+        'name.regex' => 'no debe ser un numero, solo letras.',
         'email.unique' => 'ya existe ese email.',
         'cedula.unique' => 'ya existe esa cedula.',
         'cedula.required' => 'cedula es requerida.',

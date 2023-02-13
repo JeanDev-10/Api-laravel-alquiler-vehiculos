@@ -19,7 +19,6 @@ return new class extends Migration
             $table->dateTime('tiempo_alquiler');
             $table->double('valor_alquiler');
             $table->foreignId('cliente_vehiculo_id')
-                ->nullable()
                 ->unique()
                 ->constrained('cliente_vehiculo')
                 ->cascadeOnUpdate()

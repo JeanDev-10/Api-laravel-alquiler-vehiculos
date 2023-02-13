@@ -35,7 +35,6 @@ Route::post('login', [UsuarioController::class, 'login']);
         Route::get('vehiculos/alquilados', 'vehiculosAlquilados')->name('alquilados.vehiculos');
         Route::get('vehiculos/mis-alquilados', 'vehiculosAlquiladosPropios')->name('mis-alquilados.vehiculos');
         Route::get('vehiculos/{id}','show')->name('index.show');
-        Route::post('vehiculos/alquilado/{id}','getVehiculoUser')->name('index.alquilado.show');
 
     });
 });

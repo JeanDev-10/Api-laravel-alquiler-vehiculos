@@ -16,12 +16,11 @@ return new class extends Migration
         Schema::create('cliente_vehiculo', function (Blueprint $table) {
             $table->id();
             $table->foreignId('vehiculo_id')
-            ->nullable()
+            ->unique()
             ->constrained('vehiculos')
             ->cascadeOnUpdate()
             ->cascadeOnDelete();
             $table->foreignId('user_id')
-            ->nullable()
             ->constrained('users')
             ->cascadeOnUpdate()
             ->cascadeOnDelete();
