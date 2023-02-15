@@ -34,9 +34,9 @@ class UserSeeder extends Seeder
             "user_id"=>2
         ]);
         DetalleAlquiler::create([
-            "fecha_alquiler"=>"2023-01-02",
-            "tiempo_alquiler"=>"2023-02-28",
-            "valor_alquiler"=>100,
+            "fecha_alquiler"=>"2023-02-17",
+            "tiempo_alquiler"=>"2023-02-27",
+            "valor_alquiler"=>24000,
             "cliente_vehiculo_id"=>1,
         ]);
         $vehiculo=Vehiculo::find(1);

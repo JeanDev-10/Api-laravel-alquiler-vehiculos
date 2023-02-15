@@ -10,20 +10,24 @@ use Illuminate\Support\Facades\Validator;
 class UsuarioController extends Controller
 {
     private  $rules = array(
-        'name' => 'required|regex:"^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$"',
+        'name' => 'required|regex:"^[ a-zA-ZñÑáéíóúÁÉÍÓÚ]+$"|min:10',
         'email' => 'required|email|unique:users',
         'password' => 'required',
-        'cedula' => 'required|unique:users',
+        'cedula' => 'required|unique:users|regex:"^([0-9]{10,10})"|max:10|min:10',
     );
     private $messages = array(
-        'name.required' => 'Please enter a name.',
-        'name.regex' => 'no debe ser un numero, solo letras.',
-        'email.unique' => 'ya existe ese email.',
-        'cedula.unique' => 'ya existe esa cedula.',
-        'cedula.required' => 'cedula es requerida.',
-        'email.required' => 'email es requerido.',
-        'email.email' => 'debe ser un email correcto.',
-        'password.required' => 'debe ingresar una password',
+        'name.required' => 'Nombre es requerido.',
+        'name.min' => 'Nombre minimo 10 caracteres.',
+        'name.regex' => 'No debe ser un numero, solo letras.',
+        'email.unique' => 'Ya existe ese email.',
+        'cedula.unique' => 'Ya existe esa cedula.',
+        'cedula.required' => 'Cedula es requerida.',
+        'cedula.regex' => 'Deben ser 10 digitos.',
+        'cedula.min' => 'Deben ser 10 digitos.',
+        'cedula.max' => 'Deben ser 10 digitos.',
+        'email.required' => 'Email es requerido.',
+        'email.email' => 'Debe ser un email correcto.',
+        'password.required' => 'Debe ingresar una password',
     );
     private  $rulesLogin = array(
         'email' => 'required|email',
